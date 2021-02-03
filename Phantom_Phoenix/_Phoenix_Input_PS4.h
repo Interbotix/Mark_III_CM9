@@ -188,13 +188,13 @@ void PS4InputController::ControlInput(void)
             DBGSerial.println("Please Turn on Robot with PS4 Options button");
         }
         else {
+            DBGSerial.println("Robot is on");
             g_InControlState.fRobotOn = true;
-            ps4.Reset_Vals();
+            ps4.Reset_Bools();
         }
     }
     
     if (g_InControlState.fRobotOn) {
-        DBGSerial.println("Robot is on");
         sLegInitXZAdjust = 0;
         sLegInitAngleAdjust = 0;
         fAdjustLegPositions = true;
@@ -231,6 +231,12 @@ void PS4InputController::ControlInput(void)
 #endif
                     ControlMode = SINGLELEGMODE;
             }
+        }
+
+        if (ps4.r2) {    // R2 Button
+            MSound(1, 50, 2000);
+            if (ControlMode != WALKMODE)
+                ControlMode = WALKMODE;
         }
 
         //Single leg mode fNO
@@ -523,7 +529,7 @@ void PS4InputController::ControlInput(void)
         if (((millis() - g_ulLastMsgTime) > PS4_TO) || ps4.options){
             PS4TurnRobotOff();
         }
-        ps4.Reset_Vals();
+        ps4.Reset_Bools();
     }
     
 }

@@ -25,6 +25,7 @@ bool r1_prev = 0;
 bool r2_prev = 0;
 bool r3_prev = 0;
 
+bool CM9_Ready = 0;
 void setup()
 {
     Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
@@ -38,11 +39,21 @@ void setup()
 
 void loop()
 {
+//     while (!CM9_Ready){
+//      if (Serial2.available() > 0){
+//        String message = Serial2.readStringUntil('\n');
+//          if(message.indexOf("CM9_Ready!")>=0){
+//            CM9_Ready = 1;
+//          }
+//        }      
+//     }
+//
+//    Serial.println("LETS GO CUNT");
     // Below has all accessible outputs from the controller
     if(PS4.isConnected()) {
       if ( PS4.data.button.up ){
           if(!up_prev){
-            Serial2.println("UP");
+            Serial2.print("UP\n");
             up_prev = 1;
           }
       }else{
@@ -51,7 +62,7 @@ void loop()
       
       if ( PS4.data.button.down ){
         if (!down_prev){
-          Serial2.println("DOWN");
+          Serial2.print("DOWN\n");
           down_prev = 1;
         }
       }else{
@@ -60,7 +71,7 @@ void loop()
       
       if ( PS4.data.button.left ){
         if (!left_prev){
-          Serial2.println("LEFT");
+          Serial2.print("LEFT\n");
           left_prev = 1;
         }
       }else{
@@ -69,7 +80,7 @@ void loop()
       
       if ( PS4.data.button.right ){
           if(!right_prev){
-            Serial2.println("RIGHT");
+            Serial2.print("RIGHT\n");
             right_prev = 1;
           }
       }else{
@@ -87,7 +98,7 @@ void loop()
         
       if ( PS4.data.button.triangle ){
         if(!tri_prev){
-          Serial2.println("TRIANGLE");
+          Serial2.print("TRIANGLE\n");
           tri_prev = 1;
         }
       }else{
@@ -96,7 +107,7 @@ void loop()
       
       if ( PS4.data.button.circle ){
           if(!circle_prev){
-            Serial2.println("CIRCLE");
+            Serial2.print("CIRCLE\n");
             circle_prev = 1;
           }
       }else{
@@ -105,7 +116,7 @@ void loop()
       
       if ( PS4.data.button.cross ){
         if(!x_prev){
-          Serial2.println("X");
+          Serial2.print("X\n");
           x_prev = 1;
         }
       }else{
@@ -114,7 +125,7 @@ void loop()
       
       if ( PS4.data.button.square ){
         if(!square_prev){
-          Serial2.println("SQUARE");
+          Serial2.print("SQUARE\n");
           square_prev = 1;
         }
       }else{
@@ -123,7 +134,7 @@ void loop()
         
       if ( PS4.data.button.l1 ){
         if(!l1_prev){
-          Serial2.println("L1");
+          Serial2.print("L1\n");
           l1_prev = 1;
         }
       }else{
@@ -132,7 +143,7 @@ void loop()
       
       if ( PS4.data.button.r1 ){
         if(!r1_prev){
-          Serial2.println("R1");
+          Serial2.print("R1\n");
           r1_prev = 1;
         }
       }else{
@@ -141,7 +152,7 @@ void loop()
         
       if ( PS4.data.button.l3 ){
         if(!l3_prev){
-          Serial2.println("L3");
+          Serial2.print("L3");
           l3_prev = 1;
         }
       }else{
@@ -150,7 +161,7 @@ void loop()
       
       if ( PS4.data.button.r3 ){
         if(!r3_prev){
-          Serial2.println("R3");
+          Serial2.print("R3\n");
           r3_prev = 1;
         }
       }else{
@@ -159,7 +170,7 @@ void loop()
         
       if ( PS4.data.button.share ){
         if(!share_prev){
-          Serial2.println("SHARE");
+          Serial2.print("SHARE\n");
           share_prev = 1;
         }
       }else{
@@ -168,7 +179,7 @@ void loop()
       
       if ( PS4.data.button.options ){
         if(!opt_prev){
-          Serial2.println("OPTIONS");
+          Serial2.print("OPTIONS\n");
           opt_prev = 1;
         }
       }else{
@@ -177,7 +188,7 @@ void loop()
         
       if ( PS4.data.button.ps ){
         if(!ps_prev){
-          Serial2.println("PS");
+          Serial2.print("PS\n");
           ps_prev = 1;
         }
       }else{
@@ -186,7 +197,7 @@ void loop()
       
       if ( PS4.data.button.touchpad ){
         if (!touch_prev){
-          Serial2.println("TOUCH_PAD");
+          Serial2.print("TOUCH_PAD\n");
           touch_prev = 1;
         }
       }else{
@@ -196,7 +207,8 @@ void loop()
       if ( PS4.data.button.l2 ) {
         if (!l2_prev){
           Serial2.print("L2: ");
-          Serial2.println(PS4.data.analog.button.l2, DEC);
+          Serial2.print(PS4.data.analog.button.l2, DEC);
+          Serial2.print("\n");
           l2_prev = 1;
         }
       }else{
@@ -206,7 +218,8 @@ void loop()
       if ( PS4.data.button.r2 ) {
         if(!r2_prev){
           Serial2.print("R2: ");
-          Serial2.println(PS4.data.analog.button.r2, DEC);
+          Serial2.print(PS4.data.analog.button.r2, DEC);
+          Serial2.print("\n");
           r2_prev = 1;
         }
       }else{
@@ -214,27 +227,31 @@ void loop()
       }
 
       if ( PS4.event.analog_move.stick.lx ) {
-          if (abs(PS4.data.analog.stick.lx)>10){
+         if (abs(PS4.data.analog.stick.lx)>10){
             Serial2.print("L3_hor: ");
-            Serial2.println(PS4.data.analog.stick.lx, DEC);
-          }
+            Serial2.print(PS4.data.analog.stick.lx, DEC);
+            Serial2.print("\n");
+            }
       }
       if ( PS4.event.analog_move.stick.ly ) {
-          if (abs(PS4.data.analog.stick.ly)>10){
+         if (abs(PS4.data.analog.stick.ly)>10){
             Serial2.print("L3_ver: ");
-            Serial2.println(PS4.data.analog.stick.ly, DEC);
-          }
+            Serial2.print(PS4.data.analog.stick.ly, DEC);
+            Serial2.print("\n");
+         }
       }
       if ( PS4.event.analog_move.stick.rx ) {
           if (abs(PS4.data.analog.stick.rx)>10){
             Serial2.print("R3_hor: ");
-            Serial2.println(PS4.data.analog.stick.rx, DEC);
+            Serial2.print(PS4.data.analog.stick.rx, DEC);
+            Serial2.print("\n");
           }
       }
       if (PS4.event.analog_move.stick.ry) {
           if (abs(PS4.data.analog.stick.ry)>10){
             Serial2.print("R3_ver: ");
-            Serial2.println(PS4.data.analog.stick.ry, DEC);
+            Serial2.print(PS4.data.analog.stick.ry, DEC);
+            Serial2.print("\n");
           }
       }
 

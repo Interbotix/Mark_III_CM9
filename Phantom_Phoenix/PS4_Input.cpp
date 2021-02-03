@@ -29,6 +29,7 @@ PS4_Input::PS4_Input(){
 void PS4_Input::Start_Serial(){
 //  Serial.begin(115200);
   Serial2.begin(115200);
+  //Serial2.println("CM9_Ready!\n");
 }
 
 String PS4_Input::Print_Out(){
@@ -39,12 +40,7 @@ String PS4_Input::Print_Out(){
   return (String)printout;
 }
 
-void PS4_Input::Reset_Vals(){
-    //Reset Analogues 
-    rightV = 0;
-    rightH = 0;
-    leftV = 0;
-    leftH = 0;
+void PS4_Input::Reset_Bools(){
     //Reset Bools
     ps = 0;
     share = 0;
@@ -65,8 +61,17 @@ void PS4_Input::Reset_Vals(){
     r3 = 0;
 }
 
+void PS4_Input::Reset_Analogues() {
+    //Reset Analogues 
+    rightV = 0;
+    rightH = 0;
+    leftV = 0;
+    leftH = 0;
+}
+
 int PS4_Input::Get_Input(){
   int message_received = 0;
+  int analogue_value = 0;
   if (Serial2.available() > 0){
     // read the incoming string until '\n' character:
     message = Serial2.readStringUntil('\n');
@@ -74,11 +79,17 @@ int PS4_Input::Get_Input(){
     //************************************LEFT ANALOG STICK************************************
     if((message.indexOf("L3") >= 0)){
       if (message.lastIndexOf("_hor") >= 0){
-        leftH = message.substring(message.lastIndexOf(": ")+1).toInt();
+        analogue_value = message.substring(message.lastIndexOf(": ")+1).toInt();
+        if (abs(analogue_value) > 10) {
+            leftH = analogue_value;
+        }
         //left is negative, right is positive
       }
       else if(message.lastIndexOf("_ver") >= 0) {
-        leftV = message.substring(message.lastIndexOf(": ")+1).toInt();
+        analogue_value = message.substring(message.lastIndexOf(": ")+1).toInt();
+        if (abs(analogue_value) > 10) {
+            leftV = analogue_value;
+        }
         //up is negative, down is positive
       }
       else{  
@@ -90,11 +101,17 @@ int PS4_Input::Get_Input(){
     //************************************RIGHT ANALOG STICK************************************
     if((message.indexOf("R3") >= 0)){
       if (message.lastIndexOf("_hor") >= 0){
-        rightH = message.substring(message.lastIndexOf(": ")+1).toInt();
+        analogue_value = message.substring(message.lastIndexOf(": ")+1).toInt();
+        if (abs(analogue_value) > 10) {
+            rightH = analogue_value;
+        }
         //left is negative, right is positive
       }
       else if(message.lastIndexOf("_ver") >= 0) {
-        rightV = message.substring(message.lastIndexOf(": ")+1).toInt();
+        analogue_value = message.substring(message.lastIndexOf(": ")+1).toInt();
+        if (abs(analogue_value) > 10) {
+            rightV = analogue_value;
+        }
         //up is negative, down is positive
       }
       else{  
@@ -152,6 +169,12 @@ int PS4_Input::Get_Input(){
     //*******************************************************************************************
     message_received = 1;
   } // end -> if serial2 available
+  else {
+      Reset_Analogues();
+  }
+ /* if (!analogue_value) {
+      Reset_Analogues();
+  }*/
   return message_received;
 
   // Need to workout when to reset the bools
