@@ -244,7 +244,7 @@ boolean ServoDriver::InitServos(void) {
       DBGSerial.println(missing_servo, DEC);
 #endif
       //cm904.setServoValue(cPinTable[g_iIdleServoNum], cm904Controller::REG_LED, g_iIdleLedState);
-      cm904.setServoByte(handler, 1, cm904Controller::REG_ID, missing_servo);
+      cm904.setServoByte(handler, 1, cm904Controller::REG_ID, missing_servo);  // Test out using AX_ID and DXL_X_ID instead
     }
   }
 
