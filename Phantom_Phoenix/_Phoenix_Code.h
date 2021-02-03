@@ -749,10 +749,7 @@ void setup() {
 #endif
     // Init our ServoDriver
     DBGSerial.println("Before Servo Driver Start");
-    /*if (g_ServoDriver.Init()) {
-        pinMode(13, OUTPUT);
-        digitalWrite(13, HIGH);
-    }*/
+    
     g_ServoDriver.Init();
 
     //Turning off all the leds
@@ -831,7 +828,7 @@ void setup() {
 
 void loop(void)
 {
-    DBGSerial.println("Loop Start");
+    //DBGSerial.println("Loop Start");
     //Start time
     unsigned long lTimeWaitEnd;
     lTimerStart = millis();

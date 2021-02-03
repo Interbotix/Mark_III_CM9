@@ -12,35 +12,34 @@
 //              Levi Todes (aka LeTo37) - only the PS4 stuff 
 //
 //Hardware setup: PS4 version
-//                PS4 remote connected via bluetooth to RPi
-//                RPi connected to OpenCM9.04 board via UART
+//                PS4 remote connected via bluetooth to Esp32
+//                Esp32 connected to OpenCM9.04 board via UART
 //                      - as such Serial2 used for PS4 comms
 // 
 //NEW IN V1.0
 //- First Release
 //
 //Walk method 1:
-//- Left StickWalk/Strafe
-//- Right StickRotate
+//- Left Stick                  -> Walk/Strafe
+//- Right Stick                 -> Rotate
 //
 //Walk method 2:
-//- Left StickDisable
-//- Right StickWalk/Rotate
+//- Left Stick                  -> Disable
+//- Right Stick                 -> Walk/Rotate
 //
 //
-//PS2 CONTROLS:
+//PS4 CONTROLS:
 //[Common Controls]
-//- StartTurn on/off the bot
-//- L1Toggle Shift mode
-//- L2Toggle Rotate mode
-//- CircleToggle Single leg mode
-//   - Square        Toggle Balance mode
-//- TriangleMove body to 35 mm from the ground (walk pos) 
-//and back to the ground
-//- D-Pad upBody up 10 mm
-//- D-Pad downBody down 10 mm
-//- D-Pad leftdecrease speed with 50mS
-//- D-Pad rightincrease speed with 50mS
+//- OPTIONS                     -> Turn on/off the bot
+//- L1                          -> Toggle Shift mode
+//- L2                          -> Toggle Rotate mode
+//- Circle                      -> Toggle Single leg mode
+//- Square                      -> Toggle Balance mode
+//- Triangle                    -> Stand up and sit down - Move body to 35 mm from the ground (walk pos) and back to the ground
+//- Digital UP                  -> Body up 10 mm
+//- Digital DOWN                -> Body down 10 mm
+//- Digital LEFT                -> Decrease speed by 50mS
+//- Digital RIGHT               -> Increase speed by 50mS
 //
 // Optional: L3 button down, Left stick can adjust leg positions...
 // or if OPT_SINGLELEG is not defined may try using Circle
@@ -48,31 +47,31 @@
 //
 //
 //[Walk Controls]
-//- selectSwitch gaits
-//- Left Stick(Walk mode 1) Walk/Strafe
-// (Walk mode 2) Disable
-//- Right Stick(Walk mode 1) Rotate, 
-//(Walk mode 2) Walk/Rotate
-//- R1Toggle Double gait travel speed
-//- R2Toggle Double gait travel length
+//- SHARE                       -> Switch gaits
+//- Left Stick(Walk mode 1)     -> Walk/Strafe
+//- Left Stick(Walk mode 2)     -> Disable
+//- Right Stick(Walk mode 1)    -> Rotate 
+//- Right Stick(Walk mode 2)    -> Walk/Rotate
+//- R1                          -> Toggle Double gait travel speed
+//- R2                          -> Toggle Double gait travel length
 //
 //[Shift Controls]
-//- Left StickShift body X/Z
-//- Right StickShift body Y and rotate body Y
+//- Left Stick                  -> Shift body X/Z
+//- Right Stick                 -> Shift body Y and rotate body Y
 //
 //[Rotate Controls]
-//- Left StickRotate body X/Z
-//- Right StickRotate body Y
+//- Left Stick                  -> Rotate body X/Z
+//- Right Stick                 -> Rotate body Y
 //
 //[Single leg Controls]
-//- selectSwitch legs
-//- Left StickMove Leg X/Z (relative)
-//- Right StickMove Leg Y (absolute)
-//- R2Hold/release leg position
+//- SHARE                       -> Switch legs
+//- Left Stick                  -> Move Leg X/Z (relative)
+//- Right Stick                 -> Move Leg Y (absolute)
+//- R2                          -> Hold/release leg position
 //
 //[GP Player Controls]
-//- selectSwitch Sequences
-//- R2Start Sequence
+//- SHARE                      -> Switch Sequences
+//- R2                          -> Start Sequence
 //
 //====================================================================
 // [Include files]
@@ -178,26 +177,19 @@ boolean g_fDynamicLegXZLength = false;  // Has the user dynamically adjusted the
 
 void PS4InputController::ControlInput(void)
 {
-    DBGSerial.println("Speed Control Value: ");
-    DBGSerial.print(g_InControlState.SpeedControl);
-    // See if we have a new command available...
-    //if (ps4.Get_Input()) {
-    //if (Serial2.available() > 0) {
     boolean fAdjustLegPositions = false;
     short sLegInitXZAdjust;
     short sLegInitAngleAdjust;
-    ps4.Get_Input();
-    // If we receive a valid message then turn robot on...
-        
+    ps4.Get_Input(); // Checks for valid message being received and if so, populates PS4 Class members.
+    
+    // If user hits the OPTIONS button - turns robot on and off 
     if(!g_InControlState.fRobotOn){
         if (!ps4.options) {
             DBGSerial.println("Please Turn on Robot with PS4 Options button");
-            //delay(2000);
-            //ps4.Get_Input();
         }
         else {
             g_InControlState.fRobotOn = true;
-            ps4.Reset_Bools();
+            ps4.Reset_Vals();
         }
     }
     
@@ -212,7 +204,7 @@ void PS4InputController::ControlInput(void)
         // [SWITCH MODES]
 
         // Cycle through modes...
-        if (ps4.l1) {// L1 Button Test
+        if (ps4.l1) {   // L1 Button
             MSound(1, 50, 2000);
             if (ControlMode != TRANSLATEMODE)
                 ControlMode = TRANSLATEMODE;
@@ -227,7 +219,7 @@ void PS4InputController::ControlInput(void)
         }
 
         //Rotate mode
-        if (ps4.l2) {    // L2 Button Test
+        if (ps4.l2) {    // L2 Button
             MSound(1, 50, 2000);
             if (ControlMode != ROTATEMODE)
                 ControlMode = ROTATEMODE;
@@ -243,7 +235,7 @@ void PS4InputController::ControlInput(void)
 
         //Single leg mode fNO
 #ifdef OPT_SINGLELEG
-        if (ps4.circle) {// O - Circle Button Test
+        if (ps4.circle) {// CIRCLE Button
             if (abs(g_InControlState.TravelLength.x) < cTravelDeadZone && abs(g_InControlState.TravelLength.z) < cTravelDeadZone
                 && abs(g_InControlState.TravelLength.y * 2) < cTravelDeadZone) {
                 if (ControlMode != SINGLELEGMODE) {
@@ -258,22 +250,22 @@ void PS4InputController::ControlInput(void)
             }
         }
 #endif
-        //#ifdef OPT_GPPLAYER
-        //        // GP Player Mode X
-        //        if (ps4.x) { // X - Cross Button Test
-        //            MSound(1, 50, 2000);
-        //            if (ControlMode != GPPLAYERMODE) {
-        //                ControlMode = GPPLAYERMODE;
-        //                GPSeq = 0;
-        //            }
-        //            else
-        //                ControlMode = WALKMODE;
-        //        }
-        //#endif // OPT_GPPLAYER
+#ifdef OPT_GPPLAYER
+        // GP Player Mode X
+        if (ps4.x) { // X Button
+            MSound(1, 50, 2000);
+            if (ControlMode != GPPLAYERMODE) {
+                ControlMode = GPPLAYERMODE;
+                GPSeq = 0;
+            }
+            else
+                ControlMode = WALKMODE;
+        }
+#endif // OPT_GPPLAYER
 
-                //All Modes input control:
-                //Switch Balance mode on/off
-        if (ps4.square) { // Square Button Test
+        //All Modes input control:
+        //Switch Balance mode on/off
+        if (ps4.square) { // SQUARE Button
             g_InControlState.BalanceMode = !g_InControlState.BalanceMode;
             if (g_InControlState.BalanceMode) {
                 DBGSerial.println("Balance mode off");
@@ -286,7 +278,7 @@ void PS4InputController::ControlInput(void)
         }
 
         //Stand up, sit down
-        if (ps4.triangle) {
+        if (ps4.triangle) { //TRIANGLE Button
             if (g_BodyYOffset > 0) {
                 DBGSerial.println("Robot Sit");
                 g_BodyYOffset = 0;
@@ -299,7 +291,7 @@ void PS4InputController::ControlInput(void)
             g_fDynamicLegXZLength = false;
         }
 
-        if (ps4.up) {// D-Up - Button Test
+        if (ps4.up) {// Digital UP
             g_BodyYOffset += 10;
             DBGSerial.println("Lift Robot 10");
             // And see if the legs should adjust...
@@ -308,28 +300,28 @@ void PS4InputController::ControlInput(void)
                 g_BodyYOffset = MAX_BODY_Y;
         }
 
-        if (ps4.down && g_BodyYOffset) {// D-Down - Button Test
+        if (ps4.down && g_BodyYOffset) {// Digital DOWN
             if (g_BodyYOffset > 10) {
                 DBGSerial.println("Lower Robot 10");
                 g_BodyYOffset -= 10;
             }
             else {
                 DBGSerial.println("Robot Height at 0");
-                g_BodyYOffset = 0;      // constrain don't go less than zero.
+                g_BodyYOffset = 0;      // constrain to not go less than zero.
             }
             // And see if the legs should adjust...
             fAdjustLegPositions = true;
         }
 
-        if (ps4.right) { // D-Right - Button Test
-            if (g_InControlState.SpeedControl >0) {
+        if (ps4.right) { // Digital RIGHT
+            if (g_InControlState.SpeedControl > 0) {
                 DBGSerial.println("Robot Speed + 50");
                 g_InControlState.SpeedControl = g_InControlState.SpeedControl - 50;
                 MSound(1, 50, 2000);
             }
         }
 
-        if (ps4.left) { // D-Left - Button Test
+        if (ps4.left) { // Digital LEFT
             if (g_InControlState.SpeedControl < 2000) {
                 DBGSerial.println("Robot Speed - 50");
                 g_InControlState.SpeedControl = g_InControlState.SpeedControl + 50;
@@ -355,7 +347,7 @@ void PS4InputController::ControlInput(void)
 
         if (ControlMode == WALKMODE) {
             //Switch gates
-            if (ps4.share            // Select Button Test
+            if (ps4.share            // SHARE Button
                 && abs(g_InControlState.TravelLength.x) < cTravelDeadZone //No movement
                 && abs(g_InControlState.TravelLength.z) < cTravelDeadZone
                 && abs(g_InControlState.TravelLength.y * 2) < cTravelDeadZone) {
@@ -371,7 +363,7 @@ void PS4InputController::ControlInput(void)
             }
 
             //Double leg lift height
-            if (ps4.r1) { // R1 Button Test
+            if (ps4.r1) { // R1 Button
                 MSound(1, 50, 2000);
                 DoubleHeightOn = !DoubleHeightOn;
                 if (DoubleHeightOn)
@@ -381,13 +373,13 @@ void PS4InputController::ControlInput(void)
             }
 
             //Double Travel Length
-            if (ps4.r2) {// R2 Button Test
+            if (ps4.r2) {// R2 Button
                 MSound(1, 50, 2000);
                 DoubleTravelOn = !DoubleTravelOn;
             }
 
             // Switch between Walk method 1 && Walk method 2
-            if (ps4.r3) { // R3 Button Test
+            if (ps4.r3) { // R3 Button
                 MSound(1, 50, 2000);
                 WalkMethod = !WalkMethod;
             }
@@ -443,62 +435,63 @@ void PS4InputController::ControlInput(void)
             g_InControlState.SLLeg.z = (ly) / 2; //Left Stick Up/Down
 
             // Hold single leg in place
-            if (ps4.r2) { // R2 Button Test
+            if (ps4.r2) { // R2 Button
                 MSound(1, 50, 2000);
                 g_InControlState.fSLHold = !g_InControlState.fSLHold;
             }
         }
 #endif
-        //#ifdef OPT_GPPLAYER
-        //        //[GPPlayer functions]
-        //        if (ControlMode == GPPLAYERMODE) {
-        //
-        //            // Lets try some speed control... Map all values if we have mapped some before
-        //            // or start mapping if we exceed some minimum delta from center
-        //            // Have to keep reminding myself that commander library already subtracted 128...
-        //            if (g_ServoDriver.FIsGPSeqActive()) {
-        //                if ((g_sGPSMController != 32767)
-        //                    || (ps2x.Analog(PSS_RY) > (128 + 16)) || (ps2x.Analog(PSS_RY) < (128 - 16)))
-        //                {
-        //                    // We are in speed modify mode...
-        //                    short sNewGPSM = map(ps2x.Analog(PSS_RY), 0, 255, -200, 200);
-        //                    if (sNewGPSM != g_sGPSMController) {
-        //                        g_sGPSMController = sNewGPSM;
-        //                        g_ServoDriver.GPSetSpeedMultiplyer(g_sGPSMController);
-        //                    }
-        //
-        //                }
-        //            }
-        //
-        //            //Switch between sequences
-        //            if (ps2x.ButtonPressed(PSB_SELECT)) { // Select Button Test
-        //                if (!g_ServoDriver.FIsGPSeqActive()) {
-        //                    if (GPSeq < 5) {  //Max sequence
-        //                        MSound(1, 50, 1500);
-        //                        GPSeq = GPSeq + 1;
-        //                    }
-        //                    else {
-        //                        MSound(2, 50, 2000, 50, 2250);
-        //                        GPSeq = 0;
-        //                    }
-        //                }
-        //            }
-        //            //Start Sequence
-        //            if (ps2x.ButtonPressed(PSB_R2))// R2 Button Test
-        //                if (!g_ServoDriver.FIsGPSeqActive()) {
-        //                    g_ServoDriver.GPStartSeq(GPSeq);
-        //                    g_sGPSMController = 32767;  // Say that we are not in Speed modify mode yet... valid ranges are 50-200 (both postive and negative... 
-        //                }
-        //                else {
-        //                    g_ServoDriver.GPStartSeq(0xff);    // tell the GP system to abort if possible...
-        //                    MSound(2, 50, 2000, 50, 2000);
-        //                }
-        //
-        //
-        //        }
-        //#endif // OPT_GPPLAYER
-                //Calculate walking time delay
-        g_InControlState.InputTimeDelay = 128 - max(max(abs(lx), abs(ly)), abs(ps4.rightH));        //128 - gotta scale down to a byte - Might need to do that for all analogue values!
+#ifdef OPT_GPPLAYER
+        //[GPPlayer functions]
+        if (ControlMode == GPPLAYERMODE) {
+
+            // Lets try some speed control... Map all values if we have mapped some before
+            // or start mapping if we exceed some minimum delta from center
+            // Have to keep reminding myself that commander library already subtracted 128...
+            if (g_ServoDriver.FIsGPSeqActive()) {
+                if ((g_sGPSMController != 32767)
+                    || (ps4.rightV > 16) || (ps4.rightH < 16))
+                {
+                    // We are in speed modify mode...
+                    short sNewGPSM = map(ps4.rightV, -127, 128, -200, 200);
+                    if (sNewGPSM != g_sGPSMController) {
+                        g_sGPSMController = sNewGPSM;
+                        g_ServoDriver.GPSetSpeedMultiplyer(g_sGPSMController);
+                    }
+
+                }
+            }
+
+            //Switch between sequences
+            if (ps4.share) { // Share Button
+                if (!g_ServoDriver.FIsGPSeqActive()) {
+                    if (GPSeq < 5) {  //Max sequence
+                        MSound(1, 50, 1500);
+                        GPSeq = GPSeq + 1;
+                    }
+                    else {
+                        MSound(2, 50, 2000, 50, 2250);
+                        GPSeq = 0;
+                    }
+                }
+            }
+            //Start Sequence
+            if (ps4.r2)// R2 Button
+                if (!g_ServoDriver.FIsGPSeqActive()) {
+                    g_ServoDriver.GPStartSeq(GPSeq);
+                    g_sGPSMController = 32767;  // Say that we are not in Speed modify mode yet... valid ranges are 50-200 (both postive and negative... 
+                }
+                else {
+                    g_ServoDriver.GPStartSeq(0xff);    // tell the GP system to abort if possible...
+                    MSound(2, 50, 2000, 50, 2000);
+                }
+
+
+        }
+#endif // OPT_GPPLAYER
+
+        //Calculate walking time delay
+        g_InControlState.InputTimeDelay = 128 - max(max(abs(lx), abs(ly)), abs(ps4.rightH));
 
         //Calculate g_InControlState.BodyPos.y
         g_InControlState.BodyPos.y = min(max(g_BodyYOffset + g_BodyYShift, 0), MAX_BODY_Y);
@@ -530,7 +523,7 @@ void PS4InputController::ControlInput(void)
         if (((millis() - g_ulLastMsgTime) > PS4_TO) || ps4.options){
             PS4TurnRobotOff();
         }
-        ps4.Reset_Bools();
+        ps4.Reset_Vals();
     }
     
 }

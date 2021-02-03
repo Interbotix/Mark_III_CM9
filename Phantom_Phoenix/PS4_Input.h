@@ -39,7 +39,7 @@ class PS4_Input {
     //Functions
     void Start_Serial();
     int Get_Input();
-    void Reset_Bools();
+    void Reset_Vals();
     String Print_Out();
 };
 

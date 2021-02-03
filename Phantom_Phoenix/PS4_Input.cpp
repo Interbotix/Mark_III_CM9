@@ -39,11 +39,13 @@ String PS4_Input::Print_Out(){
   return (String)printout;
 }
 
-void PS4_Input::Reset_Bools(){
+void PS4_Input::Reset_Vals(){
+    //Reset Analogues 
     rightV = 0;
     rightH = 0;
     leftV = 0;
     leftH = 0;
+    //Reset Bools
     ps = 0;
     share = 0;
     options = 0;
