@@ -65,7 +65,7 @@ void PS4_Input::Reset_Bools(){
 
 int PS4_Input::Get_Input(){
   int message_received = 0;
-  //if (Serial2.available() > 0){
+  if (Serial2.available() > 0){
     // read the incoming string until '\n' character:
     message = Serial2.readStringUntil('\n');
 
@@ -149,7 +149,7 @@ int PS4_Input::Get_Input(){
     }
     //*******************************************************************************************
     message_received = 1;
-  //} // end -> if serial2 available
+  } // end -> if serial2 available
   return message_received;
 
   // Need to workout when to reset the bools
