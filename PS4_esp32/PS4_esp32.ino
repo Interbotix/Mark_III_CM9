@@ -251,6 +251,6 @@ void loop()
 //     Serial2.println();
      // This delay is to make the Serial Print more human readable
      // Remove it when you're not trying to see the output
-     delay(100);
+//     delay(100);
     }
 }
