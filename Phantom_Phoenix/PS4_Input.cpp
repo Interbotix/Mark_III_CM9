@@ -76,51 +76,61 @@ int PS4_Input::Get_Input(){
     // read the incoming string until '\n' character:
     message = Serial2.readStringUntil('\n');
 
-    //************************************LEFT ANALOG STICK************************************
-    if((message.indexOf("L3") >= 0)){
-      if (message.lastIndexOf("_hor") >= 0){
-        analogue_value = message.substring(message.lastIndexOf(": ")+1).toInt();
-        if (abs(analogue_value) > 10) {
-            leftH = analogue_value;
+    //****************************************ANALOGUES****************************************
+    if ((message.indexOf("Analogues:") >= 0)) {
+        //************************************LEFT ANALOG STICK************************************
+        analogue_value = message.substring(message.lastIndexOf("L_hor: ") + 7, message.indexOf(";")).toInt();
+        if (abs(analogue_value) > ANALOGUE_DEADZONE) {
+            leftH = -analogue_value; // negative value -> switch directions on the left analogue
         }
+        else leftH = 0;
         //left is negative, right is positive
-      }
-      else if(message.lastIndexOf("_ver") >= 0) {
-        analogue_value = message.substring(message.lastIndexOf(": ")+1).toInt();
-        if (abs(analogue_value) > 10) {
+        //update message to get rid of already read data
+        message = message.substring(message.lastIndexOf("L_ver: "));
+        analogue_value = message.substring(message.lastIndexOf("L_ver: ") + 7, message.indexOf(";")).toInt();
+        if (abs(analogue_value) > ANALOGUE_DEADZONE) {
             leftV = analogue_value;
         }
+        else leftV = 0;
         //up is negative, down is positive
-      }
-      else{  
-        l3 = 1;
-      }
-    }
-    //******************************************************************************************
+        //update message to get rid of already read data
+        message = message.substring(message.lastIndexOf("R_hor: "));
+        //******************************************************************************************
 
-    //************************************RIGHT ANALOG STICK************************************
-    if((message.indexOf("R3") >= 0)){
-      if (message.lastIndexOf("_hor") >= 0){
-        analogue_value = message.substring(message.lastIndexOf(": ")+1).toInt();
-        if (abs(analogue_value) > 10) {
+        //************************************RIGHT ANALOG STICK************************************
+        analogue_value = message.substring(message.lastIndexOf("R_hor: ") + 7, message.indexOf(";")).toInt();
+        if (abs(analogue_value) > ANALOGUE_DEADZONE) {
             rightH = analogue_value;
         }
+        else rightH = 0;
         //left is negative, right is positive
-      }
-      else if(message.lastIndexOf("_ver") >= 0) {
-        analogue_value = message.substring(message.lastIndexOf(": ")+1).toInt();
-        if (abs(analogue_value) > 10) {
+        //update message to get rid of already read data
+        message = message.substring(message.lastIndexOf("R_ver: "));
+        analogue_value = message.substring(message.lastIndexOf("R_ver: ") + 7, message.indexOf(";")).toInt();
+        if (abs(analogue_value) > ANALOGUE_DEADZONE) {
             rightV = analogue_value;
         }
+        else rightV = 0;
         //up is negative, down is positive
-      }
-      else{  
-        r3 = 1;
-      }
-    }
+        /*Serial.print("L_hor: ");
+        Serial.print(leftH);
+        Serial.print(" L_ver: ");
+        Serial.print(leftV);
+        Serial.print(" R_hor: ");
+        Serial.print(rightH);
+        Serial.print(" R_ver: ");
+        Serial.println(rightV);*/
+        //******************************************************************************************
+    } // end analogue
     //******************************************************************************************
 
     //**************************************DIGITAL BUTTONS**************************************
+    if ((message.indexOf("R3") >= 0)) {
+        r2 = 1;
+    }
+    if ((message.indexOf("L3") >= 0)) {
+        l3 = 1;
+    }
     if((message.indexOf("R2") >= 0)){
       r2 = 1;
     }
@@ -169,12 +179,6 @@ int PS4_Input::Get_Input(){
     //*******************************************************************************************
     message_received = 1;
   } // end -> if serial2 available
-  else {
-      Reset_Analogues();
-  }
- /* if (!analogue_value) {
-      Reset_Analogues();
-  }*/
   return message_received;
 
   // Need to workout when to reset the bools

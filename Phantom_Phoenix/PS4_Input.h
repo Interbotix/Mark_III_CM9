@@ -3,6 +3,8 @@
 
 #include "Arduino.h"
 
+#define ANALOGUE_DEADZONE 20
+
 class PS4_Input {
   private:
     String message;

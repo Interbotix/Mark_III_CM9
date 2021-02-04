@@ -152,7 +152,7 @@ void loop()
         
       if ( PS4.data.button.l3 ){
         if(!l3_prev){
-          Serial2.print("L3");
+          Serial2.print("L3\n");
           l3_prev = 1;
         }
       }else{
@@ -226,34 +226,27 @@ void loop()
         r2_prev = 0;
       }
 
-      if ( PS4.event.analog_move.stick.lx ) {
-         if (abs(PS4.data.analog.stick.lx)>10){
-            Serial2.print("L3_hor: ");
+      if ( PS4.event.analog_move.stick.lx || PS4.event.analog_move.stick.ly || PS4.event.analog_move.stick.rx || PS4.event.analog_move.stick.ry ) {
+//         if ((abs(PS4.data.analog.stick.lx)>10) || (abs(PS4.data.analog.stick.ly)>10) || (abs(PS4.data.analog.stick.rx)>10) || (abs(PS4.data.analog.stick.ry)>10) ){
+            Serial2.print("Analogues:");
+            Serial2.print(" L_hor: ");
             Serial2.print(PS4.data.analog.stick.lx, DEC);
-            Serial2.print("\n");
-            }
-      }
-      if ( PS4.event.analog_move.stick.ly ) {
-         if (abs(PS4.data.analog.stick.ly)>10){
-            Serial2.print("L3_ver: ");
+            Serial2.print(";");
+            
+            Serial2.print(" L_ver: ");
             Serial2.print(PS4.data.analog.stick.ly, DEC);
-            Serial2.print("\n");
-         }
-      }
-      if ( PS4.event.analog_move.stick.rx ) {
-          if (abs(PS4.data.analog.stick.rx)>10){
-            Serial2.print("R3_hor: ");
+            Serial2.print(";");
+        
+            Serial2.print(" R_hor: ");
             Serial2.print(PS4.data.analog.stick.rx, DEC);
-            Serial2.print("\n");
-          }
-      }
-      if (PS4.event.analog_move.stick.ry) {
-          if (abs(PS4.data.analog.stick.ry)>10){
-            Serial2.print("R3_ver: ");
+            Serial2.print(";");
+           
+            Serial2.print(" R_ver: ");
             Serial2.print(PS4.data.analog.stick.ry, DEC);
+            Serial2.print(";");
             Serial2.print("\n");
-          }
-      }
+//          }
+     }
 
 //     if (PS4.data.status.charging)
 //        Serial2.println("The controller is charging");
@@ -265,9 +258,9 @@ void loop()
 //     Serial2.print("Battey Percent : ");
 //     Serial2.println(PS4.data.status.battery, DEC);
 
-//     Serial2.println();
+//     Serial2.print(" \n");
      // This delay is to make the Serial Print more human readable
      // Remove it when you're not trying to see the output
-//     delay(100);
+     delay(100);
     }
 }
