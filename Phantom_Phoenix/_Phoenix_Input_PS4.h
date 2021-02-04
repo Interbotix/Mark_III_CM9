@@ -233,12 +233,6 @@ void PS4InputController::ControlInput(void)
             }
         }
 
-        if (ps4.r2) {    // R2 Button
-            MSound(1, 50, 2000);
-            if (ControlMode != WALKMODE)
-                ControlMode = WALKMODE;
-        }
-
         //Single leg mode fNO
 #ifdef OPT_SINGLELEG
         if (ps4.circle) {// CIRCLE Button

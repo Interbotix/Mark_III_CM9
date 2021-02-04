@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#define ANALOGUE_DEADZONE 20
+#define ANALOGUE_DEADZONE 25
 
 class PS4_Input {
   private:
