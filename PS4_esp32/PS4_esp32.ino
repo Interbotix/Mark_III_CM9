@@ -25,32 +25,25 @@ bool r1_prev = 0;
 bool r2_prev = 0;
 bool r3_prev = 0;
 
-bool CM9_Ready = 0;
 void setup()
 {
+  //Setup for communication with the OpenCM9 via Serial port "Serial2"
+  //Debugging output to Serial port "Serial" has been commented out.
     Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
-    Serial.begin(9600);
-    Serial.print("ESP Board MAC Address:  ");
+//    Serial.begin(9600);
+//    Serial.print("ESP Board MAC Address:  ");
     WiFi.macAddress().toCharArray(MAC,18);
-    Serial.println(MAC);
+//    Serial.println(MAC);
     PS4.begin(MAC);
-    Serial.println("Ready.");
+//    Serial.println("Ready.");
 }
 
 void loop()
 {
-//     while (!CM9_Ready){
-//      if (Serial2.available() > 0){
-//        String message = Serial2.readStringUntil('\n');
-//          if(message.indexOf("CM9_Ready!")>=0){
-//            CM9_Ready = 1;
-//          }
-//        }      
-//     }
-//
-//    Serial.println("LETS GO CUNT");
-    // Below has all accessible outputs from the controller
+/* At this point, the Esp32 is ready and waiting for the PS4 remote to connect, it will connect automatically once the PS4 remote is turned on using the PS4 button
+      There are some buttons/events available in the "PS4Controller.h" library that are unused in this case*/
     if(PS4.isConnected()) {
+      //Once the PS4 remote is connected, the inputs are ready to be processed and sent to the OpenCm9
       if ( PS4.data.button.up ){
           if(!up_prev){
             Serial2.print("UP\n");
@@ -86,15 +79,6 @@ void loop()
       }else{
         right_prev = 0; 
       }
-        
-//      if ( PS4.data.button.upright )
-//          Serial2.println("Up Right");
-//      if ( PS4.data.button.upleft )
-//          Serial2.println("Up Left");
-//      if ( PS4.data.button.downleft )
-//          Serial2.println("Down Left");
-//      if ( PS4.data.button.downright )
-//          Serial2.println("Down Right");
         
       if ( PS4.data.button.triangle ){
         if(!tri_prev){
@@ -227,7 +211,6 @@ void loop()
       }
 
       if ( PS4.event.analog_move.stick.lx || PS4.event.analog_move.stick.ly || PS4.event.analog_move.stick.rx || PS4.event.analog_move.stick.ry ) {
-//         if ((abs(PS4.data.analog.stick.lx)>10) || (abs(PS4.data.analog.stick.ly)>10) || (abs(PS4.data.analog.stick.rx)>10) || (abs(PS4.data.analog.stick.ry)>10) ){
             Serial2.print("Analogues:");
             Serial2.print(" L_hor: ");
             Serial2.print(PS4.data.analog.stick.lx, DEC);
@@ -245,22 +228,8 @@ void loop()
             Serial2.print(PS4.data.analog.stick.ry, DEC);
             Serial2.print(";");
             Serial2.print("\n");
-//          }
      }
-
-//     if (PS4.data.status.charging)
-//        Serial2.println("The controller is charging");
-//     if (PS4.data.status.audio)
-//        Serial2.println("The controller has headphones attached");
-//     if (PS4.data.status.mic)
-//        Serial2.println("The controller has a mic attached");
-//
-//     Serial2.print("Battey Percent : ");
-//     Serial2.println(PS4.data.status.battery, DEC);
-
-//     Serial2.print(" \n");
-     // This delay is to make the Serial Print more human readable
-     // Remove it when you're not trying to see the output
+     // This delay is used to ensure smooth operation on the OpenCM9 side, removing it will make the OpenCm9 continuosly process Serial input and therefore move the hexapod in a stop-start fashion.
      delay(100);
     }
 }
