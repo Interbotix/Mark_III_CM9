@@ -28,9 +28,9 @@ The first step is to download this [PS4-Esp32 Library](https://github.com/aed3/P
 ### Pairing Your Esp32 to your PS4 remote
 Upload the code `FIND_ESP_MAC.ino` onto your Esp32 and open up the Serial port. You should then see the MAC address of your Esp32 printed out. For example, it would be a number that looks like this: `01:02:03:04:05:06`. Remember this number!
 
-Next you will need to download [Sixaxispairtool](https://sixaxispairtool.software.informer.com/download/) - what I used or you can also use [sixaxispairer](https://github.com/user-none/sixaxispairer). This software is used to change the MAC address that the PS4 remote will look to make a Bluetooth connection with. Plug your PS4 remote into the computer USB port and run the Sixaxispairtool software, the software should give you a chance to input a new MAC address, this is where you put in the MAC address that the `FIND_ESP_MAC.ino` script gave you!
+Next you will need to download [Sixaxispairtool](https://sixaxispairtool.software.informer.com/download/) - what I used or you can also use [sixaxispairer](https://github.com/user-none/sixaxispairer). This software is used to change the MAC address that the PS4 remote will look to make a Bluetooth connection with. Plug your PS4 remote into the computer USB port and run the Sixaxispairtool software, the software should give you the chance to input a new MAC address, this is where you put in the MAC address that the `FIND_ESP_MAC.ino` script gave you!
 
 From this point on, when you turn on your PS4 remote (with the PS4 button), it will automatically look for and connect to your Esp32!
 
 ### Run the PS4_esp32 code
-Next, remember to upload the `PS4_esp32.ino` code onto your Esp32. This will give you PS4 remote control of your hexapod!
+Next, remember to upload the `PS4_esp32.ino` code onto your Esp32. This will give you PS4 remote control of your hexapod! 
