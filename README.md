@@ -12,7 +12,7 @@ Me - My efforts on this project were to allow for the use of a Playstation4 remo
 ## Directory Layout
 
 ### Phoenix Code
-You will find the code to be run by the OpenCM9.04 board in the [Phantom_Phoenix](../Phantom_Phoenix) folder. This is the phoenix code used to control the PhantomX Mark III Hexapod.
+You will find the code to be run by the OpenCM9.04 board in the [Phantom_Phoenix](./Phantom_Phoenix) folder. This is the phoenix code used to control the PhantomX Mark III Hexapod.
 
 ### Esp32 Code
 You will find the code to be run by Esp32 board in the [PS4_esp32](./PS4_esp32) folder. This code is used to connect to a PS4 remote via bluetooth and then send the relevant control input data to the OpenCM9.04 via UART.
