@@ -59,7 +59,5 @@ PHOENIXGAIT APG_EXTRA[] = {
 #endif
 
 #include "_Phoenix_Input_PS4.h"
-//#include "_Phoenix_Input_Commander.h"
-//#include "_Phoenix_Input_Robotis_RC100.h"
 #include "_Phoenix_Driver_AX12.h"
 #include "_Phoenix_Code.h"
