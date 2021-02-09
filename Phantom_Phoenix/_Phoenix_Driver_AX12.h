@@ -249,7 +249,6 @@ boolean ServoDriver::InitServos(void) {
     }
   }
 
-
   // Currently have Turret pins not necessarily same as numerical order so
   // Maybe should do for all pins and then set the positions by index instead
   // of having it do a simple search on each pin...
