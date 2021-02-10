@@ -2,6 +2,7 @@
 #include "PS4_Input.h"
 
 PS4_Input::PS4_Input(){
+    /* Constructor - initialise all members to zero. */
     rightV = 0;
     rightH = 0;
     leftV = 0;
@@ -23,16 +24,18 @@ PS4_Input::PS4_Input(){
     r1 = 0;
     r2 = 0;
     r3 = 0;
-// this->message = Serial2.read(); // read whatever might be there and discard
 }
 
 void PS4_Input::Start_Serial(){
+    /* Starts serial port "Serial2" - sets up serial port from which the PS4 inputs can be read. */
 //  Serial.begin(115200);
   Serial2.begin(115200);
   //Serial2.println("CM9_Ready!\n");
 }
 
 String PS4_Input::Print_Out(){
+    /* Prints out current values of all the PS4 class members i.e. the current analogue values and button states.
+        -> returns a String. */
   char printout [400];
 
   sprintf(printout, "PLAYSATION 4 BUTTON PRESS PRINT OUT : \nl3h : %d\nl3v : %d\nr3h : %d\nr3v : %d\n * *********DIGITAL BUTTONS : **********\nPS : %d\nSHARE : %d\nOPTIONS : %d\nTRIANGLE : %d\nSQUARE : %d\nX : %d\nCIRCLE : %d\nUP : %d\nDOWN : %d\nLEFT : %d\nRIGHT : %d\nL1 : %d\nR1 : %d\nL2 : %d\nR2 : %d\nR3 : %d\nL3 : %d\n",leftH,leftV,rightH,rightV,ps,share,options,triangle,square,x,circle,up,down,left,right,l1,r1,l2,r2,l3,r3);
@@ -41,7 +44,7 @@ String PS4_Input::Print_Out(){
 }
 
 void PS4_Input::Reset_Bools(){
-    //Reset Bools
+    /* Reset Bools - resets all of the digital button values to 0 (or off) state. */
     ps = 0;
     share = 0;
     options = 0;
@@ -62,7 +65,7 @@ void PS4_Input::Reset_Bools(){
 }
 
 void PS4_Input::Reset_Analogues() {
-    //Reset Analogues 
+    /* Resets the analogue values of the PS4 joysticks back to zero. */
     rightV = 0;
     rightH = 0;
     leftV = 0;
@@ -70,6 +73,11 @@ void PS4_Input::Reset_Analogues() {
 }
 
 int PS4_Input::Get_Input(){
+  /* Processes the PS4 input - This functions reads the messages sent on the serial2 port. 
+                             - One 'message' or one 'PS4 input' is determined by a "\n" end of line character. 
+                             - In the case of analogue input, the message is dissected and analogue values are read and assigned to their appropriate analogue value PS4 class members
+                             - In the case of digital input, if the message contains the button type, the appropriate digital button PS4 class member is updated. 
+                                    -> Returns an int indicating a successful/unsuccessful read of PS4 input. */
   int message_received = 0;
   int analogue_value = 0;
   if (Serial2.available() > 0){
@@ -84,7 +92,7 @@ int PS4_Input::Get_Input(){
             leftH = -analogue_value; // negative value -> switch directions on the left analogue
         }
         else leftH = 0;
-        //left is negative, right is positive
+        //left is negative, right is positive (after adding negative values)
         //update message to get rid of already read data
         message = message.substring(message.lastIndexOf("L_ver: "));
         analogue_value = message.substring(message.lastIndexOf("L_ver: ") + 7, message.indexOf(";")).toInt();
@@ -112,14 +120,6 @@ int PS4_Input::Get_Input(){
         }
         else rightV = 0;
         //up is negative, down is positive
-        /*Serial.print("L_hor: ");
-        Serial.print(leftH);
-        Serial.print(" L_ver: ");
-        Serial.print(leftV);
-        Serial.print(" R_hor: ");
-        Serial.print(rightH);
-        Serial.print(" R_ver: ");
-        Serial.println(rightV);*/
         //******************************************************************************************
     } // end analogue
     //******************************************************************************************
@@ -179,8 +179,5 @@ int PS4_Input::Get_Input(){
     //*******************************************************************************************
     message_received = 1;
   } // end -> if serial2 available
-  return message_received;
-
-  // Need to workout when to reset the bools
-  
+  return message_received;  
 }

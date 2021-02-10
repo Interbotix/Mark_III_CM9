@@ -3,13 +3,12 @@
 
 #include "Arduino.h"
 
-#define ANALOGUE_DEADZONE 25
+#define ANALOGUE_DEADZONE 25 // value used as the sone on the analogue inputs that doesn't get processed as input. 
 
 class PS4_Input {
   private:
     String message;
     
- 
   public:
     //Constructor
     PS4_Input();

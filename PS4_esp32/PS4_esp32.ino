@@ -6,6 +6,7 @@ char MAC[18];
 #define RXD2 16
 #define TXD2 17
 
+//Bools used to ensure only one instance of each digital button press is sent and registered on the OpenCM9 side.
 bool opt_prev = 0;
 bool ps_prev = 0;
 bool share_prev = 0;

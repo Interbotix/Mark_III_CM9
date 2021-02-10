@@ -9,7 +9,7 @@
 //Date: 25-10-2009 (PS4 update: 28-12-2020)
 //Programmer: Jeroen Janssen (aka Xan)
 //             Kurt Eckhardt (aka KurtE) - converted to c ported to Arduino...
-//              Levi Todes (aka LeTo37) - only the PS4 stuff 
+//              Levi Todes (aka LeTo37) - The PS4 stuff 
 //
 //Hardware setup: PS4 version
 //                PS4 remote connected via bluetooth to Esp32
@@ -138,7 +138,6 @@ extern void PS4TurnRobotOff(void);
 //process any commands.
 //==============================================================================
 
-// If both PS4 and XBee are defined then we will become secondary to the xbee
 void PS4InputController::Init(void)
 {
     g_BodyYOffset = 0;
@@ -198,13 +197,15 @@ void PS4InputController::ControlInput(void)
         sLegInitXZAdjust = 0;
         sLegInitAngleAdjust = 0;
         fAdjustLegPositions = true;
-
+        
+        //Uncommment to view what PS4 values are being registered on the Serial port
         //DBGSerial.println((String)ps4.Print_Out());
 
         // [SWITCH MODES]
 
         // Cycle through modes...
-        if (ps4.l1) {   // L1 Button
+        if (ps4.l1) {   // L1 Button - pressed to enter and exit translate mode 
+                        //           - press again while body is translated to walk in this position
             MSound(1, 50, 2000);
             if (ControlMode != TRANSLATEMODE)
                 ControlMode = TRANSLATEMODE;
@@ -219,7 +220,8 @@ void PS4InputController::ControlInput(void)
         }
 
         //Rotate mode
-        if (ps4.l2) {    // L2 Button
+        if (ps4.l2) {    // L2 Button - pressed to enter and exit rotate mode 
+                        //            - press again while body is rotated to walk in this position
             MSound(1, 50, 2000);
             if (ControlMode != ROTATEMODE)
                 ControlMode = ROTATEMODE;
@@ -235,7 +237,7 @@ void PS4InputController::ControlInput(void)
 
         //Single leg mode fNO
 #ifdef OPT_SINGLELEG
-        if (ps4.circle) {// CIRCLE Button
+        if (ps4.circle) {// CIRCLE Button - press to enter and exit single leg control
             if (abs(g_InControlState.TravelLength.x) < cTravelDeadZone && abs(g_InControlState.TravelLength.z) < cTravelDeadZone
                 && abs(g_InControlState.TravelLength.y * 2) < cTravelDeadZone) {
                 if (ControlMode != SINGLELEGMODE) {
@@ -265,7 +267,7 @@ void PS4InputController::ControlInput(void)
 
         //All Modes input control:
         //Switch Balance mode on/off
-        if (ps4.square) { // SQUARE Button
+        if (ps4.square) { // SQUARE Button - press to activate and de-activate Balance mode
             g_InControlState.BalanceMode = !g_InControlState.BalanceMode;
             if (g_InControlState.BalanceMode) {
                 DBGSerial.println("Balance mode off");
@@ -278,7 +280,7 @@ void PS4InputController::ControlInput(void)
         }
 
         //Stand up, sit down
-        if (ps4.triangle) { //TRIANGLE Button
+        if (ps4.triangle) { //TRIANGLE Button - press to make robot sit on the ground and stand up to 35mm above ground
             if (g_BodyYOffset > 0) {
                 DBGSerial.println("Robot Sit");
                 g_BodyYOffset = 0;
@@ -291,7 +293,7 @@ void PS4InputController::ControlInput(void)
             g_fDynamicLegXZLength = false;
         }
 
-        if (ps4.up) {// Digital UP
+        if (ps4.up) {// Digital UP - press to lift the robot body by 10mm
             g_BodyYOffset += 10;
             DBGSerial.println("Lift Robot 10");
             // And see if the legs should adjust...
@@ -300,7 +302,7 @@ void PS4InputController::ControlInput(void)
                 g_BodyYOffset = MAX_BODY_Y;
         }
 
-        if (ps4.down && g_BodyYOffset) {// Digital DOWN
+        if (ps4.down && g_BodyYOffset) {// Digital DOWN - press to lower the robot body by 10mm
             if (g_BodyYOffset > 10) {
                 DBGSerial.println("Lower Robot 10");
                 g_BodyYOffset -= 10;
@@ -313,7 +315,7 @@ void PS4InputController::ControlInput(void)
             fAdjustLegPositions = true;
         }
 
-        if (ps4.right) { // Digital RIGHT
+        if (ps4.right) { // Digital RIGHT - press to increase robot speed by 50ms
             if (g_InControlState.SpeedControl > 0) {
                 DBGSerial.println("Robot Speed + 50");
                 g_InControlState.SpeedControl = g_InControlState.SpeedControl - 50;
@@ -321,7 +323,7 @@ void PS4InputController::ControlInput(void)
             }
         }
 
-        if (ps4.left) { // Digital LEFT
+        if (ps4.left) { // Digital LEFT - press to decrease robot speed by 50ms
             if (g_InControlState.SpeedControl < 2000) {
                 DBGSerial.println("Robot Speed - 50");
                 g_InControlState.SpeedControl = g_InControlState.SpeedControl + 50;
@@ -347,7 +349,7 @@ void PS4InputController::ControlInput(void)
 
         if (ControlMode == WALKMODE) {
             //Switch gates
-            if (ps4.share            // SHARE Button
+            if (ps4.share            // SHARE Button - press to change GAIT being used to walk
                 && abs(g_InControlState.TravelLength.x) < cTravelDeadZone //No movement
                 && abs(g_InControlState.TravelLength.z) < cTravelDeadZone
                 && abs(g_InControlState.TravelLength.y * 2) < cTravelDeadZone) {
@@ -363,7 +365,7 @@ void PS4InputController::ControlInput(void)
             }
 
             //Double leg lift height
-            if (ps4.r1) { // R1 Button
+            if (ps4.r1) { // R1 Button - press to double the height legs are lifted by (perhaps for uneven ground)
                 MSound(1, 50, 2000);
                 DoubleHeightOn = !DoubleHeightOn;
                 if (DoubleHeightOn)
@@ -373,19 +375,19 @@ void PS4InputController::ControlInput(void)
             }
 
             //Double Travel Length
-            if (ps4.r2) {// R2 Button
+            if (ps4.r2) {// R2 Button - press to double length that legs travel when walking
                 MSound(1, 50, 2000);
                 DoubleTravelOn = !DoubleTravelOn;
             }
 
             // Switch between Walk method 1 && Walk method 2
-            if (ps4.r3) { // R3 Button
+            if (ps4.r3) { // R3 Button - press to switch walk method
                 MSound(1, 50, 2000);
                 WalkMethod = !WalkMethod;
             }
 
             //Walking
-            if (WalkMethod) {  //(Walk Methode) 
+            if (WalkMethod) {  //(Walk Method) 
                 g_InControlState.TravelLength.z = (ps4.rightV); //Right Stick Up/Down  
             }
             else {
@@ -422,7 +424,7 @@ void PS4InputController::ControlInput(void)
 #ifdef OPT_SINGLELEG
         if (ControlMode == SINGLELEGMODE) {
             //Switch leg for single leg control
-            if (ps4.share) { // Select Button Test
+            if (ps4.share) { // SHARE Button - press while in Single leg mode to switch which leg is being controlled
                 MSound(1, 50, 2000);
                 if (g_InControlState.SelectedLeg < (CNT_LEGS - 1))
                     g_InControlState.SelectedLeg = g_InControlState.SelectedLeg + 1;
@@ -435,7 +437,7 @@ void PS4InputController::ControlInput(void)
             g_InControlState.SLLeg.z = (ly) / 2; //Left Stick Up/Down
 
             // Hold single leg in place
-            if (ps4.r2) { // R2 Button
+            if (ps4.r2) { // R2 Button - press to hold the leg being controlled in position
                 MSound(1, 50, 2000);
                 g_InControlState.fSLHold = !g_InControlState.fSLHold;
             }
@@ -520,7 +522,7 @@ void PS4InputController::ControlInput(void)
 
         g_ulLastMsgTime = millis();
     
-        if (((millis() - g_ulLastMsgTime) > PS4_TO) || ps4.options){
+        if (((millis() - g_ulLastMsgTime) > PS4_TO) || ps4.options){ // timeout to turn off the robot
             PS4TurnRobotOff();
         }
         ps4.Reset_Bools();
@@ -531,7 +533,7 @@ void PS4InputController::ControlInput(void)
 // PS4TurnRobotOff - code used couple of places so save a little room...
 //==============================================================================
 void PS4TurnRobotOff(void){
-    //Turn off
+    //Turn off sequence
     g_InControlState.BodyPos.x = 0;
     g_InControlState.BodyPos.y = 0;
     g_InControlState.BodyPos.z = 0;
