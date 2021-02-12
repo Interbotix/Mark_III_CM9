@@ -1,4 +1,3 @@
-
 // Warning setup to build for standard hexapod, octopod, or for quad.
 //  #define QUADMODE
 //  #define HEXMODE

@@ -28,8 +28,6 @@
 #define cPwmDivXL       256
 #define cPFConstXL      2048    // half of our 1024 range
 
-
-
 // Some defines for Voltage processing
 #define VOLTAGE_MIN_TIME_UNTIL_NEXT_INTERPOLATE 4000  // Min time in us Until we should do next interpolation, as to not interfer.
 #define VOLTAGE_MIN_TIME_BETWEEN_CALLS 150      // Max 6+ times per second
@@ -40,7 +38,6 @@
 
 #define USE_BIOLOIDEX            // Use the Bioloid code to control the AX12 servos...
 #include "CMController.h"
-
 
 
 #ifdef DBGSerial

@@ -28,7 +28,7 @@ PS4_Input::PS4_Input(){
 
 void PS4_Input::Start_Serial(){
     /* Starts serial port "Serial2" - sets up serial port from which the PS4 inputs can be read. */
-//  Serial.begin(115200);
+  //Serial.begin(115200);
   Serial2.begin(115200);
   //Serial2.println("CM9_Ready!\n");
 }

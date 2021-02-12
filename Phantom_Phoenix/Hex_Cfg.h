@@ -28,7 +28,7 @@
 
 #define DBGSerial         Serial
 
-// Define other optional compnents to be included or not...
+// Define other optional components to be included or not...
 //#define PHANTOMX_V2     // Some code may depend on it being a V2 PhantomX
 #define cFemurHornOffset1 -35
 #define cTibiaHornOffset1 463
@@ -98,7 +98,7 @@
 #define DXL_PROTOCOL               		1                 	// See which protocol version is used in the Dynamixel
 #define DXL_BAUD						1000000				// Primary connection
 
-#define DXL2_PORT_NAME			NULL				// use same port as primary
+#define DXL2_PORT_NAME					NULL				// use same port as primary
 #define DXL2_PROTOCOL                	2                 	// See which protocol version is used in the Dynamixel
 #define DXL2_BAUD						1000000				// Primary connection
 

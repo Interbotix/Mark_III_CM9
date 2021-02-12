@@ -30,7 +30,6 @@
 #else
 #endif
 //#include <EEPROM.h>
-//#include <PS2X_lib.h>
 #include <pins_arduino.h>
 //#include <SoftwareSerial.h>        
 #define BalanceDivFactor CNT_LEGS    //;Other values than 6 can be used, testing...CAUTION!! At your own risk ;)
@@ -581,7 +580,7 @@ word            ServoMoveTime;        //Time for servo updates
 word            PrevServoMoveTime;    //Previous time for the servo updates
 
 //--------------------------------------------------------------------
-//[GLOABAL]
+//[GLOBAL]
 //--------------------------------------------------------------------
 
 // Define our global Input Control State object
@@ -714,7 +713,7 @@ extern void GaitSeq(void);
 extern void BalanceBody(void);
 extern void CheckAngles();
 
-extern void    PrintSystemStuff(void);            // Try to see why we fault...
+extern void PrintSystemStuff(void);            // Try to see why we fault...
 
 
 //extern void  GaitGetNextLeg(byte GaitStep);
@@ -850,7 +849,7 @@ void loop(void)
     GaitSeq();
 
     DoBackgroundProcess();
-    //Serial.println("Loop: After GaitSeq");
+
     //Balance calculations
     TotalTransX = 0;     //reset values used for calculation of balance
     TotalTransZ = 0;
@@ -1105,8 +1104,6 @@ void StartUpdateServos()
     g_ServoDriver.OutputServoInfoForTurret(g_InControlState.TurretRotAngle1, g_InControlState.TurretTiltAngle1);  // fist just see if it will talk
 #endif  
 }
-
-
 
 
 //--------------------------------------------------------------------
