@@ -110,8 +110,6 @@ bool cm904Controller::setId(int index, int id) {
   
   // This function will try to locate the servo and fill in
   uint8_t handler = findServo(id, servo);
-  //DBGSerial.print("handler value: ");
-  //DBGSerial.println(handler);
   if (handler != 0xff) {
     // The find servo filled in type and handler, lets also clear out pose info
     servo->pose = servo->nextpose = (servo->type == SERVO_XL430)? 2048 : 512;
