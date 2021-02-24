@@ -126,7 +126,7 @@ int PS4_Input::Get_Input(){
 
     //**************************************DIGITAL BUTTONS**************************************
     if ((message.indexOf("R3") >= 0)) {
-        r2 = 1;
+        r3 = 1;
     }
     if ((message.indexOf("L3") >= 0)) {
         l3 = 1;
