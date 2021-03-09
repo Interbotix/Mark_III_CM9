@@ -22,6 +22,11 @@ There is also a folder called [FIND_ESP_MAC](./FIND_ESP_MAC), in which there is 
 ## Setup
 This serves as a guide to describe how to set up your Playstation4 remote and your Esp32 to work together to get input to the hexapod! This should already be done if you purchased your hexapod from Interbotix, but this guide is available for using a new remote or if something else goes wrong with connecting your PS4 remote!
 
+### Setup for Arduino IDE
+If this is your first time using an Esp32 in the Arduino IDE, please follow the guide in [this link](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) to learn how to get started. Please note that once you have the Esp32 boards loaded in the Arduino Boards Manager, please ensure that you have version 1.0.4 installed, as newer versions are not yet compatible with the PS4 library described below (as of March 9 2021).
+
+In setting up the Arduino IDE for using the OpenCM9.04 board, please follow the guide in [this link!](https://emanual.robotis.com/docs/en/software/arduino_ide/#install-arduino-idewindows). Please note, this link will give you options for whatever OS you are running, found in the menu on the left hand side of the page.
+
 ### Playstation4 Library
 The first step is to download this [PS4-Esp32 Library](https://github.com/aed3/PS4-esp32) (Credit to [aed3](https://github.com/aed3) for their fantastic library!). With this downloaded to your computer, place the file "PS4-esp32-master" amongst the rest of your Arduino libraries - likely in `/Arduino/libraries`.
 
