@@ -7,7 +7,7 @@ Kare Halvorsen (aka Zenta) - The Lynxmotion Phoenix was based on the original Ph
 
 Kurt Eckhardt (aka Kurt) - Kurt later ported the code to C/C++ and the Arduino environment. His work in this regard can be found [here](https://github.com/KurtE/Arduino_Phoenix_Parts). He further extended his [fantastic work](https://github.com/KurtE/Open_CM_CR_Arduino_Sketches) to use the ROBOTIS DynamixelSDK in order to allow for the Phoenix code to work on the ROBOTIS OpenCM9.04 board.
 
-Me - My efforts on this project were to allow for the use of a Playstation4 remote to control the hexapod and adjust the Phoenix code accordingly.
+Levi Todes - Levi's efforts on this project were to allow for the use of a Playstation4 remote to control the hexapod and adjust the Phoenix code accordingly.
 
 ## Directory Layout
 
